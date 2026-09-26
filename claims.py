@@ -12,7 +12,7 @@ import marimo
 __generated_with = "0.25.0"
 app = marimo.App(width="medium")
 
-with app.setup:
+with app.setup(hide_code=True):
     import html
     import io
     import json
@@ -29,21 +29,6 @@ with app.setup:
 
 
 @app.cell(hide_code=True)
-def _():
-    mo.md(r"""
-    # Checking claims against abstracts
-
-    This notebook uses Jev through DSPy to classify a claim as supported, contradicted, or not addressed by a cited abstract.
-    It uses 340 claim-abstract pairs from the development split of [SciFact](https://github.com/allenai/scifact), a dataset of biomedical claims with expert annotations.
-    The model reads the paper's title and abstract, not its full text.
-
-    The examples below compare the model's answers with the dataset labels.
-    You can select uncertain answers for review or edit a claim to see how the answer changes.
-    """)
-    return
-
-
-@app.cell
 def _():
     Verdict = Literal["supports", "contradicts", "not_enough_info"]
     VERDICTS = get_args(Verdict)
@@ -69,7 +54,7 @@ def _():
     return CheckClaimWithConfidence, VERDICTS
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _():
     def scifact_folder():
         """SciFact's data folder next to this notebook, downloaded once from AllenAI (CC BY-NC 2.0)."""
@@ -110,26 +95,13 @@ def _():
     return (load_dev,)
 
 
-@app.cell
-def _(VERDICTS, load_dev):
+@app.cell(hide_code=True)
+def _(load_dev):
     dev = load_dev()
-    _counts = Counter(example.verdict for example in dev)
-    mo.md(f"SciFact dev: **{len(dev)}** claim-abstract pairs, " + ", ".join(f"{_counts[v]} {v}" for v in VERDICTS) + ".")
     return (dev,)
 
 
 @app.cell(hide_code=True)
-def _():
-    mo.md(r"""
-    ## Results
-
-    Each answer includes probabilities for the three possible labels.
-    The confidence score is used to order examples for review; it is not a guarantee that an answer is correct.
-    """)
-    return
-
-
-@app.cell
 def _():
     def is_correct(example, pred, trace=None):
         verdict = getattr(pred.verdict, "value", pred.verdict)  # a Choice answer keeps the verdict in .value
@@ -160,7 +132,7 @@ def _():
     return compare, jev_dollars
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(CheckClaimWithConfidence, compare, dev, jev_dollars):
     mo.stop(
         not os.environ.get("TYPESAFE_API_KEY"),
@@ -175,31 +147,7 @@ def _(CheckClaimWithConfidence, compare, dev, jev_dollars):
     return jev, jev_row
 
 
-@app.cell
-def _(dev, jev_row):
-    mo.md(
-        f"Jev agreed with the dataset label on **{sum(jev_row['correct'].values())} of {len(dev)} pairs "
-        f"({jev_row['accuracy']:.1%})**. "
-        f"Unanswered pairs: {jev_row['unanswered']}."
-    )
-    return
-
-
 @app.cell(hide_code=True)
-def _():
-    mo.md(r"""
-    ## Review uncertain answers
-
-    Each bar is one answer, ordered by confidence and colored by whether it matches the dataset label.
-    Hover over a bar to read the claim.
-
-    Use the slider to select the least confident answers for review.
-    The counts show how many disagree with the dataset labels and the accuracy among the remaining answers.
-    """)
-    return
-
-
-@app.cell
 def _(jev_row):
     least_confident_first = sorted(
         ((example, pred) for example, pred, _ in jev_row["results"] if "verdict" in pred),
@@ -235,79 +183,35 @@ def _(claim_rows):
                  alt.Tooltip("Jev:N", title="Jev"),
                  alt.Tooltip("true verdict:N", title="Dataset label"),
                  alt.Tooltip("confidence:Q", title="Confidence", format=".2f")],
-    ).properties(height=200, width="container")
-    mo.ui.altair_chart(confidence_chart, chart_selection=False, legend_selection=False)
-    return
-
-
-@app.cell
-def _(claim_rows):
-    triage = mo.ui.slider(
-        start=0, stop=len(claim_rows), step=1, value=round(0.2 * len(claim_rows)),
-        label="Verdicts sent to a person", show_value=True, full_width=True,
-    )
-    triage
-    return (triage,)
-
-
-@app.cell
-def _(claim_rows, triage):
-    sent = claim_rows[:triage.value]
-    kept = claim_rows[triage.value:]
-    caught = sum(row["Jev"] != row["true verdict"] for row in sent)
-    remaining_errors = sum(row["Jev"] != row["true verdict"] for row in kept)
-    mo.vstack([
-        mo.hstack([
-            mo.stat(
-                f"{len(sent)} verdicts", label="Sent to a person",
-                caption=f"Contains {caught} of {caught + remaining_errors} errors", bordered=True,
-            ),
-            mo.stat(
-                f"{1 - remaining_errors / len(kept):.1%} correct" if kept else "None",
-                label="Answers not selected for review", caption=f"{len(kept)} verdicts remain", bordered=True,
-            ),
-        ], widths="equal"),
-        mo.ui.table(sent, selection=None, label="Claims sent to a person, least confident first"),
-    ])
-    return
+    ).properties(height=140, width="container")
+    chart_view = mo.ui.altair_chart(confidence_chart, chart_selection=False, legend_selection=False)
+    return (chart_view,)
 
 
 @app.cell(hide_code=True)
-def _():
-    mo.md(r"""
-    ## Edit a claim
-
-    Select an example and edit its claim.
-    The abstract stays the same; the table compares the probabilities before and after the edit.
-    The dataset label applies only to the original claim.
-    Small probability changes can occur even when the meaning stays the same.
-    """)
-    return
-
-
-@app.cell
 def _(claim_rows):
-    # Start on the metastatic colorectal cancer example when it is in this run's answers.
-    _start = next((row["#"] for row in claim_rows if row["claim"].startswith("Metastatic colorectal cancer")), 0)
     claim_picker = mo.ui.table(
-        claim_rows, selection="single", initial_selection=[_start], page_size=5, label="Pick a claim, least confident first"
+        claim_rows,
+        selection="single", initial_selection=[0], page_size=5,
+        visible_columns=["claim", "confidence"],
+        show_column_summaries=False, show_data_types=False,
+        show_download=False, show_search=False,
+        label="Select a claim (least confident first)",
     )
-    claim_picker
     return (claim_picker,)
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(claim_picker, least_confident_first):
     _picked = claim_picker.value[0]["#"] if claim_picker.value else 0
     picked_example, picked_pred = least_confident_first[_picked]
     edited_claim = mo.ui.text_area(
-        value=picked_example.claim, label="Edit the claim, then click outside the box", rows=3, full_width=True
+        value=picked_example.claim, label="Edit the claim; click outside to evaluate", rows=2, full_width=True
     )
-    edited_claim
     return edited_claim, picked_example, picked_pred
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(
     CheckClaimWithConfidence,
     edited_claim,
@@ -323,36 +227,36 @@ def _(
     return (edited_pred,)
 
 
-@app.cell
-def _(VERDICTS, edited_pred, picked_example, picked_pred):
+@app.cell(hide_code=True)
+def _(VERDICTS, edited_claim, edited_pred, picked_example, picked_pred):
     _before, _after = picked_pred.verdict, edited_pred.verdict
-    if edited_pred is picked_pred:
-        _status = "Edit the claim above to see whether Jev's verdict moves."
-    elif _after.value != _before.value:
-        _status = f"For the edited claim, Jev's verdict flipped to **{_after.value}** with confidence {_after.confidence:.2f}."
-    else:
-        _status = f"For the edited claim, Jev's verdict held at **{_after.value}** with confidence {_after.confidence:.2f}."
-    mo.vstack(
-        [
-            mo.md(
-                f"The original claim is labeled **{picked_example.verdict}**, and Jev said **{_before.value}** "
-                f"with confidence {_before.confidence:.2f}. {_status}"
-            ),
-            mo.ui.table(
-                [
-                    {
-                        "verdict": verdict,
-                        "original probability": f"{_before.probabilities[verdict]:.1%}",
-                        "edited probability": f"{_after.probabilities[verdict]:.1%}",
-                        "change (percentage points)": f"{100 * (_after.probabilities[verdict] - _before.probabilities[verdict]):+.1f}",
-                    }
-                    for verdict in VERDICTS
-                ],
-                selection=None,
-            ),
-            mo.accordion({"Abstract Jev reads": mo.Html(f"<p>{html.escape(picked_example.abstract)}</p>")}),
-        ]
+    _status = "Original answer" if edited_pred is picked_pred else "Edited answer"
+    probability_table = mo.md(
+        "| Verdict | Original | Edited |\n| :-- | --: | --: |\n" + "\n".join(
+            f"| {verdict.replace('_', ' ')} | {_before.probabilities[verdict]:.1%} | {_after.probabilities[verdict]:.1%} |"
+            for verdict in VERDICTS
+        )
     )
+    editor_panel = mo.vstack([
+        edited_claim,
+        mo.md(f"{_status}: **{_after.value.replace('_', ' ')}**. Original label: **{picked_example.verdict.replace('_', ' ')}**."),
+        probability_table,
+        mo.md(f"Current answer: ({max(_after.probabilities.values()):.1%} - 33.3%) / 66.7% "
+              f"gives confidence **{_after.confidence:.2f}** (rounded)."),
+        mo.accordion({"Source abstract": mo.Html(f"<p>{html.escape(picked_example.abstract)}</p>")}),
+    ], gap=0.5)
+    return (editor_panel,)
+
+
+@app.cell(hide_code=True)
+def _(chart_view, claim_picker, dev, editor_panel, jev_row):
+    mo.vstack([
+        mo.md(f"### Checking claims against abstracts\nJev checks {len(dev)} [SciFact](https://github.com/allenai/scifact) claim-abstract pairs through DSPy. Agreement with expert labels: **{jev_row['accuracy']:.1%}**; unanswered: {jev_row['unanswered']}."),
+        chart_view,
+        mo.md("Confidence rescales the largest of the three probabilities: **(largest probability - 1/3) / (2/3)**. "
+              "An equal split gives 0; certainty gives 1. It is not the probability that the answer is correct."),
+        mo.hstack([mo.vstack([claim_picker]).style({"min-width": "0", "overflow-x": "auto"}), editor_panel.style({"min-width": "0"})], widths=[1, 1], align="start", gap=1),
+    ], gap=0.5)
     return
 
 

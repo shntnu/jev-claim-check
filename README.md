@@ -6,7 +6,12 @@ A [marimo](https://marimo.io) notebook that checks biomedical claims against the
 It uses Jev through [DSPy](https://dspy.ai) to classify 340 claim-abstract pairs from the development split of [SciFact](https://github.com/allenai/scifact). The three labels are supported, contradicted, and not enough information.
 
 The notebook compares the model's answers with the dataset labels.
-You can select uncertain answers for review and edit claims to compare the resulting probabilities against the same abstract.
+Hover over the confidence chart to inspect individual answers, or edit a claim to compare the resulting probabilities against the same abstract.
+
+Confidence rescales the highest probability relative to an equal split across the three labels: `(max_probability - 1/3) / (2/3)`.
+For probabilities of 38%, 41%, and 21%, the model selects the 41% answer and the confidence is `(0.41 - 1/3) / (2/3) = 0.115`, displayed as 0.12.
+This follows TypeSafe's published [Choice confidence formula](https://github.com/typesafe-ai/system-one-adapter-python/blob/main/src/system_one_adapter/_utils/confidence_metrics.py).
+Confidence is not the probability that the answer is correct; the chart compares this score with agreement against the dataset labels.
 
 ## Run it
 
@@ -19,12 +24,13 @@ Secrets are not copied into forks, so everyone who runs the notebook uses their 
 Locally, put the key in a `.env` file next to the notebook and run:
 
 ```sh
-uvx --env-file .env marimo edit --sandbox claims.py
+uvx --env-file .env marimo run --sandbox claims.py
 ```
 
 The notebook declares its dependencies inline, so `--sandbox` installs them in an isolated environment.
+Use `marimo edit` instead of `marimo run` to work on the code.
 
-Run `uv run check_demo.py` to check the review slider and claim-editing flow with synthetic predictions, without API calls.
+Run `uv run check_demo.py` to check the confidence chart and claim-editing flow with synthetic predictions, without API calls.
 
 ## Data
 

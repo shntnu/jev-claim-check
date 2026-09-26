@@ -36,17 +36,10 @@ def check_demo():
     assert outputs
     assert [r["claim"] for r in state["claim_rows"]] == ["Claim 1", "Claim 2", "Claim 0"]
     assert state["edited_pred"] is state["picked_pred"]
-    assert state["triage"].value == 1
     chart = state["confidence_chart"].to_dict()
     assert chart["mark"]["type"] == "bar"
     assert len(chart["data"]["values"]) == len(examples)
     assert {row["result"] for row in chart["data"]["values"]} == {"Correct", "Incorrect"}
-
-    for cut in [0, 1, 3]:
-        _, state = app.run(defs={**overrides, "triage": SimpleNamespace(value=cut)})
-        assert len(state["sent"]) == cut
-        assert state["caught"] == min(cut, 2)
-        assert state["remaining_errors"] == 2 - min(cut, 2)
 
     changed = dspy.Prediction(verdict=SimpleNamespace(
         value="contradicts", confidence=0.8,
@@ -60,8 +53,9 @@ def check_demo():
         })
     predictor.assert_called_once_with(claim="Reversed claim", abstract="Original abstract")
     assert state["edited_pred"] is changed
-    assert any("verdict flipped" in output.text for output in outputs if hasattr(output, "text"))
-    print("Demo checks passed: sorting, review endpoints, result reuse, and edited-claim prediction.")
+    assert "Edited answer" in state["editor_panel"].text
+    assert "contradicts" in state["editor_panel"].text
+    print("Demo checks passed: sorting, chart data, result reuse, and edited-claim prediction.")
 
 
 if __name__ == "__main__":
