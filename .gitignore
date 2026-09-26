@@ -10,5 +10,6 @@ __pycache__/
 .agents/skills/jupyter-to-marimo/
 .agents/skills/marimo-batch/
 .agents/skills/marimo-notebook/
+.agents/skills/marimo-pair/
 .agents/skills/streamlit-to-marimo/
 .agents/skills/wasm-compatibility/

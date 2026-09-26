@@ -49,6 +49,12 @@
       "skillPath": "skills/marimo-notebook/SKILL.md",
       "computedHash": "d843af038a49245369d9a91b8dda531a0d58882bc06623604b673cb144588edd"
     },
+    "marimo-pair": {
+      "source": "marimo-team/marimo-pair",
+      "sourceType": "github",
+      "skillPath": "skills/marimo-pair/SKILL.md",
+      "computedHash": "56b1540731d05d5d85e8e59fbad67205b8a59e89bb6eb0da65341fcd558cdb1d"
+    },
     "streamlit-to-marimo": {
       "source": "marimo-team/skills",
       "sourceType": "github",
