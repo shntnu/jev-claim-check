@@ -2,3 +2,13 @@ data/
 .env
 __pycache__/
 .agents/skills/typesafe-ai/
+.agents/skills/add-molab-badge/
+.agents/skills/anywidget-generator/
+.agents/skills/auto-paper-demo/
+.agents/skills/implement-paper/
+.agents/skills/implement-paper-auto/
+.agents/skills/jupyter-to-marimo/
+.agents/skills/marimo-batch/
+.agents/skills/marimo-notebook/
+.agents/skills/streamlit-to-marimo/
+.agents/skills/wasm-compatibility/
