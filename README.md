@@ -1,13 +1,12 @@
-# Does this abstract support this claim?
+# Checking claims against abstracts
 
 [![Open in molab](https://marimo.io/molab-shield.svg)](https://molab.marimo.io/github/shntnu/jev-claim-check/blob/main/claims.py)
 
 A [marimo](https://marimo.io) notebook that checks biomedical claims against the abstracts cited for them.
-One [DSPy](https://dspy.ai) signature runs on Jev, [TypeSafe](https://typesafe.ai)'s System One model, over the 340 claim-abstract pairs in [SciFact](https://github.com/allenai/scifact)'s dev split.
+It uses Jev through [DSPy](https://dspy.ai) to classify 340 claim-abstract pairs from the development split of [SciFact](https://github.com/allenai/scifact). The three labels are supported, contradicted, and not enough information.
 
-- Jev answers every pair in seconds, for about a cent, and a recorded Claude Haiku 4.5 run on the same pairs gives a reference point.
-- A draggable strip sorts Jev's verdicts by confidence, so you can choose how many of the least confident go to a person.
-- A text box lets you edit any claim and see whether Jev's verdict flips against the same abstract.
+The notebook compares the model's answers with the dataset labels.
+You can select uncertain answers for review and edit claims to compare the resulting probabilities against the same abstract.
 
 ## Run it
 
@@ -24,6 +23,8 @@ uvx --env-file .env marimo edit --sandbox claims.py
 ```
 
 The notebook declares its dependencies inline, so `--sandbox` installs them in an isolated environment.
+
+Run `uv run check_demo.py` to check the review slider and claim-editing flow with synthetic predictions, without API calls.
 
 ## Data
 
