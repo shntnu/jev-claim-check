@@ -1,0 +1,354 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.25.0",
+    "script_metadata_hash": "5522fb46e61073bf5a17da0342253c58"
+  },
+  "cells": [
+    {
+      "id": "setup",
+      "code_hash": "3da6767eb00fbb425e70cbec3dd77c89",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Hbol",
+      "code_hash": "1a07dda75fc5dd6ceb6c4a77ccc05e06",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"does-this-abstract-support-this-claim\">Does this abstract support this claim?</h1>\n<span class=\"paragraph\">Jev, TypeSafe's System One model, judges whether a paper's abstract supports, contradicts, or says nothing about a scientific claim, through one DSPy signature.\nThe data is <a href=\"https://github.com/allenai/scifact\" rel=\"noopener noreferrer\" target=\"_blank\">SciFact</a> (Wadden et al. 2020): expert-labeled biomedical claims paired with the abstracts cited for them.\nThe notebook downloads it, about 3 MB, the first time it runs.</span>\n<span class=\"paragraph\">Jev runs live on all 340 pairs when the notebook opens, which takes seconds and costs about a cent on your TypeSafe key.\nAn LLM's result on the same pairs appears as a recorded reference, so the notebook never pays for an LLM.</span>\n<span class=\"paragraph\">To run it, provide your TypeSafe API key as <code>TYPESAFE_API_KEY</code>.\nOn molab, add it as a notebook secret.\nLocally, put it in a <code>.env</code> file next to this notebook and run <code>uvx --env-file .env marimo edit --sandbox claims.py</code>.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "MJUe",
+      "code_hash": "054664c646a384d19ad5c1b25867337d",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "ae7b185f4bf8b468ac2d132eacf9a15c",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "50901282a5924c8f60ab40e8199fdf9b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><span class=\"paragraph\">SciFact dev: <strong>340</strong> claim-abstract pairs, 138 supports, 71 contradicts, 131 not_enough_info.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "caf150124c9a1818ba151e55c3ac3f95",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"1-jev-on-every-pair-next-to-a-recorded-llm\">1. Jev on every pair, next to a recorded LLM</h2>\n<span class=\"paragraph\"><code>CheckClaim</code> defines the task, and <code>compare</code> runs it on every pair and records accuracy, time, and cost.\nFor Jev, the verdict is typed as a <code>Choice</code>, so each answer also carries Jev's confidence.\nThe question Jev sees stays the same.\nClaude Haiku 4.5 answered the same pairs through the plain <code>CheckClaim</code> on 2026-09-25, and its numbers below are fixed from that run.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "PKri",
+      "code_hash": "e37f502a772417dea82e8e81e4f25523",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "51893f39a25de01a85f1ce0250f679cf",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stderr",
+          "text": "2026/09/25 20:20:28 INFO dspy.evaluate.evaluate: Average Metric: 293 / 340 (86.2%)\n",
+          "mimetype": "text/plain"
+        }
+      ]
+    },
+    {
+      "id": "SFPL",
+      "code_hash": "95fefc4d092a5941477e26d22a173a1f",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "BYtC",
+      "code_hash": "8cb4bd35d82664f3e852d4461bd65a3b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<div style='display: flex;flex: 1;flex-direction: row;justify-content: space-between;align-items: normal;flex-wrap: nowrap;gap: 0.5rem'><div style='flex: 1'><marimo-stat data-value='&quot;86.2%&quot;' data-label='&quot;Jev accuracy&quot;' data-caption='&quot;+4.4 pts vs Claude Haiku 4.5 (recorded) at 81.8%&quot;' data-direction='&quot;increase&quot;' data-bordered='true' data-target_direction='&quot;increase&quot;'></marimo-stat></div><div style='flex: 1'><marimo-stat data-value='&quot;7 s&quot;' data-label='&quot;Jev time for 340 checks&quot;' data-caption='&quot;Claude Haiku 4.5 (recorded) took 49 s, 7.0x as long&quot;' data-direction='&quot;decrease&quot;' data-bordered='true' data-target_direction='&quot;decrease&quot;'></marimo-stat></div><div style='flex: 1'><marimo-stat data-value='&quot;&#36;0.012&quot;' data-label='&quot;Jev cost for 340 checks&quot;' data-caption='&quot;Claude Haiku 4.5 (recorded) cost &#36;0.44, 38x as much&quot;' data-direction='&quot;decrease&quot;' data-bordered='true' data-target_direction='&quot;decrease&quot;'></marimo-stat></div></div>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "RGSE",
+      "code_hash": "8e5e195e21f4f5fe5c09d191232875fe",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='RGSE-0' random-id='7592abe4-a364-1e4f-29d2-c8f9aaab6ad2'><marimo-anywidget data-initial-value='{&quot;model_id&quot;:&quot;8d0712000a57407dad4baf4cb24faf36&quot;}' data-label='null' data-model-id='&quot;8d0712000a57407dad4baf4cb24faf36&quot;'></marimo-anywidget></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Kclp",
+      "code_hash": "5d94769ef569aaf1b01f8c7695953aa5",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-accordion data-labels='[&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eTable view&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;]' data-multiple='false' data-expanded='[]'><div><marimo-ui-element object-id='Kclp-0' random-id='2b56a98a-d1da-72c8-23d7-8267796c9c46'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;[{&#92;&quot;backend&#92;&quot;:&#92;&quot;Jev&#92;&quot;,&#92;&quot;accuracy&#92;&quot;:&#92;&quot;86.2%&#92;&quot;,&#92;&quot;seconds&#92;&quot;:7,&#92;&quot;cost&#92;&quot;:&#92;&quot;&#36;0.012&#92;&quot;,&#92;&quot;supports&#92;&quot;:&#92;&quot;119/138&#92;&quot;,&#92;&quot;contradicts&#92;&quot;:&#92;&quot;65/71&#92;&quot;,&#92;&quot;not_enough_info&#92;&quot;:&#92;&quot;109/131&#92;&quot;,&#92;&quot;unanswered&#92;&quot;:0},{&#92;&quot;backend&#92;&quot;:&#92;&quot;Claude Haiku 4.5 (recorded)&#92;&quot;,&#92;&quot;accuracy&#92;&quot;:&#92;&quot;81.8%&#92;&quot;,&#92;&quot;seconds&#92;&quot;:49,&#92;&quot;cost&#92;&quot;:&#92;&quot;&#36;0.439&#92;&quot;,&#92;&quot;supports&#92;&quot;:&#92;&quot;125/138&#92;&quot;,&#92;&quot;contradicts&#92;&quot;:&#92;&quot;64/71&#92;&quot;,&#92;&quot;not_enough_info&#92;&quot;:&#92;&quot;89/131&#92;&quot;,&#92;&quot;unanswered&#92;&quot;:0}]&quot;' data-total-rows='2' data-total-columns='8' data-max-columns='50' data-banner-text='&quot;&quot;' data-pagination='false' data-page-size='10' data-show-filters='false' data-show-download='true' data-show-search='true' data-show-column-summaries='false' data-show-data-types='true' data-show-page-size-selector='false' data-show-column-explorer='true' data-show-chart-builder='true' data-row-headers='[]' data-hidden-columns='[]' data-has-stable-row-id='false' data-lazy='false' data-preload='false'></marimo-table></marimo-ui-element></div></marimo-accordion>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "emfo",
+      "code_hash": "35a93cbf6ba6975a0e1a0cbd7209ddac",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"2-jevs-confidence-decides-what-a-person-checks\">2. Jev's confidence decides what a person checks</h2>\n<span class=\"paragraph\">Each thin column below is one of Jev's verdicts from section 1, sorted from least to most confident, and its height is Jev's confidence.\nRed marks the verdicts Jev got wrong.\nDrag the line to choose how many of the least confident verdicts go to a person, and hover a column to read its claim.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Hstk",
+      "code_hash": "493fee40e3641609611d0ac89d415a20",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "nWHF",
+      "code_hash": "78890d426d74d34be2863e771e921e72",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='nWHF-0' random-id='4addbaff-20b6-8013-d2e8-f3720ec05f7d'><marimo-anywidget data-initial-value='{&quot;model_id&quot;:&quot;9d9676dfeac74b0799b3d14c0f16911a&quot;}' data-label='null' data-model-id='&quot;9d9676dfeac74b0799b3d14c0f16911a&quot;'></marimo-anywidget></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "iLit",
+      "code_hash": "2c368c91d88696ac56eea99ec21a78c9",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='iLit-0' random-id='40c5d5f5-8581-d0ea-3aeb-dec23c8f4fae'><marimo-table data-initial-value='[]' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eThe 68 claims sent to a person, least confident first&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-data='&quot;[{&#92;&quot;claim&#92;&quot;:&#92;&quot;Febrile seizures increase the threshold for development of epilepsy.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;not_enough_info&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;not_enough_info&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.09},{&#92;&quot;claim&#92;&quot;:&#92;&quot;A total of 1,000 people in the UK are asymptomatic carriers of vCJD infection.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.15},{&#92;&quot;claim&#92;&quot;:&#92;&quot;Metastatic colorectal cancer treated with a single agent fluoropyrimidines resulted in reduced efficacy and lower quality of life when compared with oxaliplatin-based chemotherapy in elderly patients.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.15},{&#92;&quot;claim&#92;&quot;:&#92;&quot;Leuko-increased blood increases infectious complications in red blood cell transfusion.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.18},{&#92;&quot;claim&#92;&quot;:&#92;&quot;Rapid phosphotransfer rates govern fidelity in two component systems&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;not_enough_info&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.2},{&#92;&quot;claim&#92;&quot;:&#92;&quot;ADAR1 binds to Dicer to cleave pre-miRNA.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.22},{&#92;&quot;claim&#92;&quot;:&#92;&quot;Female carriers of the Apolipoprotein E4 (APOE4) allele have increased risk for dementia.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.25},{&#92;&quot;claim&#92;&quot;:&#92;&quot;New drugs for tuberculosis often do not penetrate the necrotic portion of a tuberculosis lesion in high concentrations.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.25},{&#92;&quot;claim&#92;&quot;:&#92;&quot;The risk of breast cancer among parous women increases with placental weight of pregnancies, and this association is strongest for premenopausal breast cancer.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.27},{&#92;&quot;claim&#92;&quot;:&#92;&quot;Cell autonomous sex determination in somatic cells occurs in Passeriformes.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.29}]&quot;' data-total-rows='68' data-total-columns='4' data-max-columns='50' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-show-filters='false' data-show-download='true' data-show-search='true' data-show-column-summaries='true' data-show-data-types='true' data-show-page-size-selector='true' data-show-column-explorer='true' data-show-chart-builder='true' data-row-headers='[]' data-hidden-columns='[]' data-has-stable-row-id='false' data-lazy='false' data-preload='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ZHCJ",
+      "code_hash": "adbeae425da43a9a7e7f7e3f05ae6daf",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"3-edit-a-claim-and-watch-jevs-verdict\">3. Edit a claim and watch Jev's verdict</h2>\n<span class=\"paragraph\">Pick a claim, then change it in the box: reverse the finding, swap the population, drug, or an identifier, or paraphrase it.\nJev judges the edited claim against the same abstract, and the chart shows how its probability for each verdict moved.\nA good checker flips when the meaning changes and holds steady when it doesn't.\nJev's probabilities vary a little between calls, so treat a shift of a few points as noise.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ROlb",
+      "code_hash": "b181f4d4a4d7313a4c47ea7925756d17",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='ROlb-0' random-id='e700191d-c62c-6f83-7806-f84a4db9e93d'><marimo-table data-initial-value='[2]' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003ePick a claim, least confident first&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-data='&quot;[{&#92;&quot;#&#92;&quot;:0,&#92;&quot;claim&#92;&quot;:&#92;&quot;Febrile seizures increase the threshold for development of epilepsy.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;not_enough_info&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;not_enough_info&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.09},{&#92;&quot;#&#92;&quot;:1,&#92;&quot;claim&#92;&quot;:&#92;&quot;A total of 1,000 people in the UK are asymptomatic carriers of vCJD infection.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.15},{&#92;&quot;#&#92;&quot;:2,&#92;&quot;claim&#92;&quot;:&#92;&quot;Metastatic colorectal cancer treated with a single agent fluoropyrimidines resulted in reduced efficacy and lower quality of life when compared with oxaliplatin-based chemotherapy in elderly patients.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.15},{&#92;&quot;#&#92;&quot;:3,&#92;&quot;claim&#92;&quot;:&#92;&quot;Leuko-increased blood increases infectious complications in red blood cell transfusion.&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;contradicts&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.18},{&#92;&quot;#&#92;&quot;:4,&#92;&quot;claim&#92;&quot;:&#92;&quot;Rapid phosphotransfer rates govern fidelity in two component systems&#92;&quot;,&#92;&quot;true verdict&#92;&quot;:&#92;&quot;supports&#92;&quot;,&#92;&quot;Jev&#92;&quot;:&#92;&quot;not_enough_info&#92;&quot;,&#92;&quot;confidence&#92;&quot;:0.2}]&quot;' data-total-rows='340' data-total-columns='5' data-max-columns='50' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='5' data-selection='&quot;single&quot;' data-show-filters='false' data-show-download='true' data-show-search='true' data-show-column-summaries='true' data-show-data-types='true' data-show-page-size-selector='true' data-show-column-explorer='true' data-show-chart-builder='true' data-row-headers='[]' data-hidden-columns='[]' data-has-stable-row-id='false' data-lazy='false' data-preload='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "qnkX",
+      "code_hash": "291aacfb39c60de3f3fd6b75f72e7167",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='qnkX-0' random-id='95a854e3-26f7-2cb2-aa8e-b64c667f9ff4'><marimo-text-area data-initial-value='&quot;Metastatic colorectal cancer treated with a single agent fluoropyrimidines resulted in reduced efficacy and lower quality of life when compared with oxaliplatin-based chemotherapy in elderly patients.&quot;' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eEdit the claim, then click outside the box&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-placeholder='&quot;&quot;' data-disabled='false' data-debounce='true' data-full-width='true' data-rows='3'></marimo-text-area></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "TqIu",
+      "code_hash": "463e2f44459fc039d441ea96ab72b734",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Vxnm",
+      "code_hash": "13466663da92c817a1bac94d4dfdb941",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<div style='display: flex;flex: 1;flex-direction: column;justify-content: flex-start;align-items: normal;flex-wrap: nowrap;gap: 0.5rem'><span class=\"markdown prose dark:prose-invert contents\"><span class=\"paragraph\">The original claim is labeled <strong>supports</strong>, and Jev said <strong>contradicts</strong> with confidence 0.15. Edit the claim above to see whether Jev's verdict moves.</span></span><marimo-ui-element object-id='Vxnm-0' random-id='e6522b9a-d44a-828b-2c47-70d2074001eb'><marimo-anywidget data-initial-value='{&quot;model_id&quot;:&quot;b85d7f1797ff4cf080f2a62e81b758dc&quot;}' data-label='null' data-model-id='&quot;b85d7f1797ff4cf080f2a62e81b758dc&quot;'></marimo-anywidget></marimo-ui-element><marimo-accordion data-labels='[&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eAbstract Jev reads&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;]' data-multiple='false' data-expanded='[]'><div><p>Chemotherapy options in elderly and frail patients with metastatic colorectal cancer (MRC FOCUS2): an open-label, randomised factorial trial. BACKGROUND Elderly and frail patients with cancer, although often treated with chemotherapy, are under-represented in clinical trials. We designed FOCUS2 to investigate reduced-dose chemotherapy options and to seek objective predictors of outcome in frail patients with advanced colorectal cancer. METHODS We undertook an open, 2 \u00d7 2 factorial trial in 61 UK centres for patients with previously untreated advanced colorectal cancer who were considered unfit for full-dose chemotherapy. After comprehensive health assessment (CHA), patients were randomly assigned by minimisation to: 48-h intravenous fluorouracil with levofolinate (group A); oxaliplatin and fluorouracil (group B); capecitabine (group C); or oxaliplatin and capecitabine (group D). Treatment allocation was not masked. Starting doses were 80% of standard doses, with discretionary escalation to full dose after 6 weeks. The two primary outcome measures were: addition of oxaliplatin ([A vs B] + [C vs D]), assessed with progression-free survival (PFS); and substitution of fluorouracil with capecitabine ([A vs C] + [B vs D]), assessed by change from baseline to 12 weeks in global quality of life (QoL). Analysis was by intention to treat. Baseline clinical and CHA data were modelled against outcomes with a novel composite measure, overall treatment utility (OTU). This study is registered, number ISRCTN21221452. FINDINGS 459 patients were randomly assigned (115 to each of groups A-C, 114 to group D). Factorial comparison of addition of oxaliplatin versus no addition suggested some improvement in PFS, but the finding was not significant (median 5\u00b78 months [IQR 3\u00b73-7\u00b75] vs 4\u00b75 months [2\u00b78-6\u00b74]; hazard ratio 0\u00b784, 95% CI 0\u00b769-1\u00b701, p=0\u00b707). Replacement of fluorouracil with capecitabine did not improve global QoL: 69 of 124 (56%) patients receiving fluorouracil reported improvement in global QoL compared with 69 of 123 (56%) receiving capecitabine. The risk of having any grade 3 or worse toxic effect was not significantly increased with oxaliplatin (83/219 [38%] vs 70/221 [32%]; p=0\u00b717), but was higher with capecitabine than with fluorouracil (88/222 [40%] vs 65/218 [30%]; p=0\u00b703). In multivariable analysis, fewer baseline symptoms (odds ratio 1\u00b732, 95% CI 1\u00b714-1\u00b752), less widespread disease (1\u00b751, 1\u00b705-2\u00b719), and use of oxaliplatin (0\u00b757, 0\u00b739-0\u00b782) were predictive of better OTU. INTERPRETATION FOCUS2 shows that with an appropriate design, including reduced starting doses of chemotherapy, frail and elderly patients can participate in a randomised controlled trial. On balance, a combination including oxaliplatin was preferable to single-agent fluoropyrimidines, although the primary endpoint of PFS was not met. Capecitabine did not improve QoL compared with fluorouracil. Comprehensive baseline assessment holds promise as an objective predictor of treatment benefit. FUNDING Cancer Research UK and the Medical Research Council.</p></div></marimo-accordion></div>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "DnEU",
+      "code_hash": "5ab96fe4ecfa12a53c268a32138c3d15",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"appendix-widgets\">Appendix: widgets</h2>\n<span class=\"paragraph\">Three small <a href=\"https://anywidget.dev\" rel=\"noopener noreferrer\" target=\"_blank\">anywidget</a> views draw the charts above.\nTheir JavaScript and CSS live in the cells below, so this notebook runs as a single file, including on molab.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ulZA",
+      "code_hash": "f84bdf1e37edacbb731675df274f1219",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ecfG",
+      "code_hash": "f67f3565b4b212d62efddd30ca065a02",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Pvdt",
+      "code_hash": "6f19c46d176e922841b92135309f58ff",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ZBYS",
+      "code_hash": "7b3105cd6e1252c7a7e8669fc7a8fb77",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    }
+  ]
+}
