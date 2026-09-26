@@ -30,8 +30,6 @@ uvx --env-file .env marimo run --sandbox claims.py
 The notebook declares its dependencies inline, so `--sandbox` installs them in an isolated environment.
 Use `marimo edit` instead of `marimo run` to work on the code.
 
-Run `uv run check_demo.py` to check the confidence chart and claim-editing flow with synthetic predictions, without API calls.
-
 ## Data
 
 SciFact (Wadden et al. 2020) is downloaded from AllenAI the first time the notebook runs, about 3 MB.
